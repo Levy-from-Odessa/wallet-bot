@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "start": "nodemon  --ignore data/ ./src/index.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "nodemon": "^2.0.7",
+    "telegraf": "^3.3.0",
+    "telegraf-session-local": "^2.1.0"
+  },
+  "name": "BudgetBot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "node-env-run": "^4.0.2"
+  }
+}
