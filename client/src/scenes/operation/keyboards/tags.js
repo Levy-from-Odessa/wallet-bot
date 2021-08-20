@@ -3,39 +3,35 @@ const Markup = require('telegraf/markup')
 const tagsServices = require('../../../services/tagsServices')
 
 
-const tagsBtns = async() => {
+const tagsKeys = async () => {
     const tags = (await tagsServices.getItems()).data
-    const finishBtn = Markup.button('finish')
+    const finishBtn = [Markup.button('finish')]
+    console.log(tags);
     const testTwice = tags.reduce((result, curr) => {
         const currBtn = Markup.button(curr.name)
-        const resCopy = Object.assign([], result)
         const resLength = result.length
-        if (resLength > 0 && resLength % 2 === 1) {
+        const lastItem = result[resLength - 1]
 
-            twiceItem = [resCopy[resLength - 1], currBtn]
-            return [...resCopy, twiceItem]
+        if (resLength % 2 === 0 && resLength !==0 && lastItem.length === 1) {
+            console.log(lastItem, 'lastItem');
+            const twiceItem = [...lastItem, currBtn]
+            const newRes = result.splice(resLength - 1, 1)
+
+            // console.log(newRes, 'newRes');
+            return [...result, twiceItem]
         } else {
-            return [ ...resCopy, currBtn]
+            console.log(result, 'result');
+            return [ ...result, [currBtn]]
         }
-
-
     }, [])
 
     console.log(testTwice, 'twice');
-    return [
-        finishBtn,
-        // ...tags.map((tag, index) => {
-        //     return Markup.button(tag.name)
-        // }) 
-        ...testTwice
-    ]
+    return Markup.keyboard([
+           finishBtn,
+            ...testTwice
+    ]).extra()
 }
 
-const tagsKeyboard = async() => {
-    return Markup.keyboard(
-        await tagsBtns()
-    ).extra()
-}
 
-module.exports = tagsKeyboard
+module.exports = tagsKeys
         

@@ -23,7 +23,8 @@ const operationScene = new WizardScene(
   'operation', // first argument is Scene_ID, same as for BaseScene
   async (ctx) => {
     ctx.wizard.state.operationData = {currency: '', price: 0, tagNames: []};
-    ctx.reply('In which currency did you spend money?', currencyKeys);
+    console.log(currencyKeys());
+    ctx.reply('In which currency did you spend money?', currencyKeys());
     
     return ctx.wizard.next();
   },
@@ -36,7 +37,8 @@ const operationScene = new WizardScene(
   async (ctx) => {
     const price = ctx.message.text
     saveData({price}, ctx)
-    ctx.reply('What did you buy?', await tagsKeys());
+    console.log(await tagsKeys());
+    ctx.reply('What did you buy?',await tagsKeys());
     return ctx.wizard.next();
   },
   async (ctx) => {

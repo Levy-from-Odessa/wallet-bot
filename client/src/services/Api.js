@@ -26,15 +26,7 @@ Api.interceptors.request.use(
 Api.interceptors.response.use(
   (response) => {
     const { data } = response
-    if (response.data['hydra:member']) {
-      return {
-        data: data['hydra:member'],
-        totalItems: data['hydra:totalItems']
-      }
-    } else {
-      console.log('there are usual response')
-      return { data }
-    }
+    return data 
   },
   (error) => {
     // if (

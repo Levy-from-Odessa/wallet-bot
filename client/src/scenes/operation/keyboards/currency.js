@@ -1,16 +1,19 @@
 
 const Markup = require('telegraf/markup')
-const currencyKeys = Markup.keyboard(
-    [
+const currencyKeys = () => {
+    const USD = Markup.button('USD')
+    return Markup.keyboard(
         [
-            Markup.button('USD'),
-            Markup.button('UAH')
-        ],
-        [
-            Markup.button('EUR'),
-            Markup.button('BTC')
-        ],
-    ]
-).extra()
+            [
+                USD,
+                Markup.button('UAH')
+            ],
+            [
+                Markup.button('EUR'),
+                Markup.button('BTC')
+            ],
+        ]
+    ).extra()
+}
 
 module.exports = currencyKeys
