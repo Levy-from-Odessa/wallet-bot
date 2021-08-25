@@ -9,7 +9,7 @@ module.exports = {
   getItem ( id) {
     return Api.get(url + '/' + id)
   },
-  getItems ( {query}) {
+  getItems  (query = '') {
     if (query) {
       url += '?'
       Object.keys(query)
