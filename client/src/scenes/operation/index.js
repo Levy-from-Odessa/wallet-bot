@@ -1,15 +1,16 @@
 
-const Scene = require('telegraf/scenes/base')
 const WizardScene = require('telegraf/scenes/wizard')
-const Stage = require('telegraf/stage')
 const Markup = require('telegraf/markup')
 
+// store
+// import { state, mutations } from './store'
 
 // keyboards
 const currencyKeys = require('./keyboards/currency')
 const tagsKeys = require('./keyboards/tags')
+
 // services
-const walletServices = require('../../services/walletServices')
+const operationsServices = require('../../services/operationsServices')
 
 const saveData = (data = {}, ctx) => {
     const oldData = ctx.wizard.state.operationData
@@ -22,7 +23,11 @@ const saveData = (data = {}, ctx) => {
 const operationScene = new WizardScene(
   'operation', // first argument is Scene_ID, same as for BaseScene
   async (ctx) => {
-    ctx.wizard.state.operationData = {currency: '', price: 0, tagNames: []};
+    ctx.wizard.state.operationData = {
+      currency: '',
+      price: 0, 
+      tags: []
+    };
     console.log(currencyKeys());
     ctx.reply('In which currency did you spend money?', currencyKeys());
     
@@ -43,15 +48,18 @@ const operationScene = new WizardScene(
   },
   async (ctx) => {
     const newTagName = ctx.message.text
-    const {tagNames} = ctx.wizard.state.operationData
-    saveData({tagNames: [...tagNames, newTagName]}, ctx)
+    const {tags} = ctx.wizard.state.operationData
+    saveData({tags: [...tags, newTagName]}, ctx)
   },
 )
 
 operationScene.hears('finish', async ctx => {
   const operation = saveData({}, ctx)
   try {
-    await walletServices.post(operation)
+    await operationsServices.post({
+      ...operation,
+      type: 'Expense'
+    })
   } catch (error) {
     console.log(error);
   }

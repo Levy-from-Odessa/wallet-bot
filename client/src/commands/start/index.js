@@ -1,31 +1,34 @@
 const Markup = require('telegraf/markup')
-const walletServices = require('../../services/walletServices')
+const operationsServices = require('../../services/operationsServices')
 
-// test
-const nodeHtmlToImage = require('node-html-to-image')
-const swig = require('swig')
+const compileTpl = require('../../templates/compileTpl')
 
-const keyboard = Markup.keyboard(
-    [Markup.button('expense')]
-).extra()
+const keyboard = Markup.keyboard([
+    [
+      Markup.button('Report'),
+    ],
+    [
+      Markup.button('Expense'),
+      Markup.button('Invest'),
+    ],
+    [
+      Markup.button('Income'),
+      Markup.button('Total'),
+    ]
+]).extra()
 
-
-// render template with props
-function compileTpl(file, params) { // actions?, filesType?
-  const compiled = swig.compileFile(file)
-  return compiled(params)
-}  
 
 
 module.exports = async (ctx) => {
-    const {data} = await walletServices.getItems()
+    const {data} = await operationsServices.getItems()
+    const headers = ['type', 'currency', 'price', 'tags', 'createdAt']
     
-    const tpl = compileTpl('./src/templates/report.html', {data, headers: [1,2,3]})
-    const image = await nodeHtmlToImage({
-        html: tpl
-    })
+    const tplImage = await compileTpl(
+      './src/templates/report/index.tpl', 
+      {data, headers }
+    )
 
 
-    ctx.replyWithPhoto({source:image})
+    ctx.replyWithPhoto({source: tplImage})
     await ctx.reply('welcome', keyboard)
 }
