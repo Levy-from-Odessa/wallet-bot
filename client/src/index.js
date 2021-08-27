@@ -1,6 +1,5 @@
 require('dotenv').config();
 const Telegraf = require('telegraf')
-const TSL = require('telegraf-session-local')
 const session = require('telegraf/session')
 
 const Stage = require('telegraf/stage')
@@ -10,15 +9,14 @@ const Stage = require('telegraf/stage')
 const startCommand = require('./commands/start')
 
 // scenes
-const operationScene = require('./scenes/operation')
+const operationScene = require('./scenes/quiz/operation')
 
-
-
-
+// tables
+const operationTable = require('./scenes/admin/operations')
 
 const init = (bot, config) => {
     // scenes
-    const stage = new Stage([operationScene ])
+    const stage = new Stage([operationScene, operationTable ])
     // middleaware
     bot.use(session())
     // bot.use(new TSL({database:'data/session.json'}).middleware())
@@ -27,12 +25,12 @@ const init = (bot, config) => {
     
     // commands
     bot.start(startCommand)
+    bot.hears('Report', startCommand)
     
     
     // handler 
-    bot.hears('Expense',(ctx) =>  {
-        ctx.scene.enter('operation') 
-    })
+    bot.hears('Expense', Stage.enter('operation') )
+    bot.hears('Settings', Stage.enter('operationTable') )
     
     return bot
 }

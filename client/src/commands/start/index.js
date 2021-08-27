@@ -14,21 +14,26 @@ const keyboard = Markup.keyboard([
     [
       Markup.button('Income'),
       Markup.button('Total'),
-    ]
+    ],
+    [
+      Markup.button('Settings'),
+    ],
 ]).extra()
 
 
 
 module.exports = async (ctx) => {
-    const {data} = await operationsServices.getItems()
+    const allItems = (await operationsServices.getItems()).data
+    const total = (await operationsServices.total()).data
     const headers = ['type', 'currency', 'price', 'tags', 'createdAt']
-    
+    const totalHeaders = ['type', 'amount']
+
     const tplImage = await compileTpl(
       './src/templates/report/index.tpl', 
-      {data, headers }
+      {allItems, headers, total, totalHeaders }
     )
 
 
     ctx.replyWithPhoto({source: tplImage})
-    await ctx.reply('welcome', keyboard)
+    ctx.reply('welcome', keyboard)
 }

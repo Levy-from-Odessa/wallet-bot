@@ -1,6 +1,6 @@
 
 const Markup = require('telegraf/markup')
-const tagsServices = require('../../../services/tagsServices')
+const tagsServices = require('../../../../services/tagsServices')
 
 
 const tagsKeys = async () => {

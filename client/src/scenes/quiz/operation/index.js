@@ -10,7 +10,7 @@ const currencyKeys = require('./keyboards/currency')
 const tagsKeys = require('./keyboards/tags')
 
 // services
-const operationsServices = require('../../services/operationsServices')
+const operationsServices = require('../../../services/operationsServices')
 
 const saveData = (data = {}, ctx) => {
     const oldData = ctx.wizard.state.operationData

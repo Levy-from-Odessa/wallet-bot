@@ -1,24 +1,27 @@
  {% import "./cells.tpl" as cells%}
 <html>
+ <div>
+	<h1> Your activity in {{total.month}} month </h1>
 	<table>
 		<tr>
 			{% for header in headers %}
 				<th>{{header}}</th>
 			{% endfor %}
 		</tr>
-		{% for item in data %}
+		{% for item in allItems %}
 			<tr>
 				{% for header in headers %}
+
+					<!--DATE -->
 					{% if header=='createdAt' %}
 						{{cells.date(item[header])}}
-					{% elseif item[header]|isArray %}
-						<td>
-							{% for val in item[header] %}
-								<span>
-									{{val.name}} 
-								</span>
-							{% endfor %}
-						</td>
+
+					<!--TAG -->
+					{% elseif header === 'tags' %}
+						{{cells.tag(item[header])}}
+
+
+					<!--ELSE -->
 					{% elseif item[header]|isObject %}
 						<td>
 							{{item[header].name}}
@@ -32,26 +35,21 @@
 			</tr>
 		{% endfor %}
 	</table>
-	<!---<table>
+	<table>
 		<tr>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
+			{% for totalHeader in totalHeaders %}
+				<th>{{totalHeader}}</th>
+			{% endfor %}
 		</tr>
-		<tr>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-			<td>1</td>
-		</tr>
-	</table> ---> 
+		{% for price in total.totalPrice %}
+			<tr>
+				{% for totalHeader in totalHeaders %}
+					<td> {{price[totalHeader]}} </td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</table>
+ </div>
 </html>
 
 <style>

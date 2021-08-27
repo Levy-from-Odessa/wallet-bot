@@ -9,6 +9,9 @@ module.exports = {
   getItem ( id) {
     return Api.get(url + '/' + id)
   },
+  total (id) {
+    return Api.get(url + '/' + 'total')
+  },
   getItems  (query = '') {
     if (query) {
       url += '?'
