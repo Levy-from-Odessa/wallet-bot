@@ -1,16 +1,15 @@
 
 module.exports  = ({app, namespace, controller}) => {
-    console.log(namespace, 'generator');
 	app.get(`/${namespace}`,
 		controller.index
 	)
-	app.post(`/${namespace}/create`,
+	app.post(`/${namespace}`,
 		controller.post
 	)
-	app.delete(`/${namespace}/delete`,
+	app.delete(`/${namespace}`,
 		controller.delete
 	)
-	app.post(`/${namespace}/edit`,
+	app.post(`/${namespace}`,
 		controller.edit
 	)
 }

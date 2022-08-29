@@ -13,11 +13,8 @@ module.exports  = (namespace ) => {
         },
         async post (req, res) {
             try{
-                console.log(req.body)
                 const newItem = await Models[namespace].create(req.body)
-                res.send({
-                    newItem
-                })
+                res.send(newItem)
             } catch(error) {
                 res.status(400).send({
                     error: 'while trying to add ' + namespace
@@ -49,7 +46,7 @@ module.exports  = (namespace ) => {
                     }
                 })
                 tag.update(req.body)
-                res.send({editItem})
+                res.send(editItem)
             } catch(error) {
                 res.status(400).send({
                     error: 'cant udate' + namespace

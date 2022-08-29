@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
 	})
 
 	Operation.associate = function(models) {
+		Operation.belongsToMany(models.Tag, {
+			through: models.Operation_Tag,
+			unique: false,
+		});
 		Operation.hasOne(models.Operation_Type, {
 			 through: models.Operation 
 		});

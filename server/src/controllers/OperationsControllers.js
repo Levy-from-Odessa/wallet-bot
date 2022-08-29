@@ -37,11 +37,11 @@ module.exports  = {
 
 	async post (req, res) {
 		try{
-            const {tagNames} = req.body
-            const operation = await Operation.create(req.body)
+			const {tags} = req.body
+			// const operation = await Operation.create(req.body)
 
-			tagNames.forEach(async tagName => {
-				const [tag] = await Tag.findOrCreate({
+			const fetchedTags = await Promise.all(tags.map(async tagName => {
+				const tag = await Tag.findOne({
 					where: {
 						name: tagName
 					},
@@ -49,9 +49,22 @@ module.exports  = {
 						name: tagName
 					}
 				})
-				operation.addTag(tag)
-			})
+				return tag.name || tag
+			}))
 
+
+			const operation = await Operation.create({
+					...req.body,
+					Tags: 
+				},
+				{
+					include: [{
+						model: Tag,
+					}],
+					attributes: { exclude: ['Operation_Tag'] }
+				},
+			)
+			console.log(operation);
 
 			const result = await Operation.findOne({
 				where: {
@@ -61,12 +74,8 @@ module.exports  = {
 					model: Tag,
 				}]
 			})
-            res.send({
-                result,
-				operation
-            })
 
-
+			res.send(result)
 
 		} catch(error) {
 			res.status(400).send({
