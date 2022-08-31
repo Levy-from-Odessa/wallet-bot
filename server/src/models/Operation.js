@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
 			through: models.Operation_Tag,
 			unique: false,
 		});
+		Operation.belongsTo(models.Wallet, {
+			through: models.Operation,
+			unique: false,
+		});
 		Operation.hasOne(models.Operation_Type, {
 			 through: models.Operation 
 		});

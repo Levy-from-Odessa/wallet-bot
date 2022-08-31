@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
 	const Wallet = sequelize.define('Wallet', {
-		price: {
-			type: DataTypes.INTEGER,
+		username: {
+			type: DataTypes.STRING,
 			allowNull: false
 		},
-		currency: {
-			type: DataTypes.STRING,
+		total: {
+			type: DataTypes.INTEGER,
 			allowNull: false
 		},
 	})

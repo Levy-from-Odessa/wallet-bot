@@ -37,34 +37,28 @@ module.exports  = {
 
 	async post (req, res) {
 		try{
-			const {tags} = req.body
-			// const operation = await Operation.create(req.body)
-
-			const fetchedTags = await Promise.all(tags.map(async tagName => {
-				const tag = await Tag.findOne({
-					where: {
-						name: tagName
-					},
-					defaults: {
-						name: tagName
-					}
-				})
-				return tag.name || tag
-			}))
-
+			const {tags, type} = req.body
 
 			const operation = await Operation.create({
 					...req.body,
-					Tags: 
-				},
-				{
-					include: [{
-						model: Tag,
-					}],
-					attributes: { exclude: ['Operation_Tag'] }
 				},
 			)
-			console.log(operation);
+
+			await Promise.all(tags.map(async tag => {
+				await operation.addTag(await Tag.findOne({
+					where:{ name: tag},
+					default:{ name: tag}
+				}))
+			}))
+
+
+
+			// ??how to create 1:m 
+			await operation.addType(await Tag.findOne({
+					where:{ name: type},
+					default:{ name: type}
+				})
+			)
 
 			const result = await Operation.findOne({
 				where: {
@@ -72,7 +66,7 @@ module.exports  = {
 				},
 				include:[{
 					model: Tag,
-				}]
+				}],
 			})
 
 			res.send(result)
