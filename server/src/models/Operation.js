@@ -13,19 +13,21 @@ module.exports = (sequelize, DataTypes) => {
 	Operation.associate = function(models) {
 		Operation.belongsToMany(models.Tag, {
 			through: models.Operation_Tag,
-			unique: false,
+			as: 'tags',
 		});
 		Operation.belongsTo(models.Wallet, {
 			through: models.Operation,
 			unique: false,
 		});
-		Operation.hasOne(models.Operation_Type, {
-			 through: models.Operation 
+		Operation.belongsTo(models.Operation_Type, {
+			 foreignKey: 'operationType',
+			//  as:'operationType'
 		});
 		Operation.hasOne(models.Currency, {
 			 through: models.Operation 
 		});
 	}
+	
 
 	return Operation
 }

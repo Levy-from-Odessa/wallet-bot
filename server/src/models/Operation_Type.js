@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
 	})
 
 	Operation_Type.associate = function(models) {
-		Operation_Type.belongsTo(models.Operation, {
-			 through: models.Operation_Type
+		Operation_Type.hasMany(models.Operation, {
+			foreignKey: 'operationType',
 		});
 	}
 

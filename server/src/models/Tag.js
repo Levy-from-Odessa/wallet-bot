@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 	Tag.associate = function(models) {
 		Tag.belongsToMany(models.Operation, {
 			through: models.Operation_Tag ,
-			unique: false,
+			as: 'operations',
 		});
 	}
 

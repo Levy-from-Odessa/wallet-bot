@@ -1,12 +1,13 @@
 const {sequelize} = require('../models')
-const {Operation , Tag } = require('../models')
+const {Operation , Tag, Operation_Type } = require('../models')
 module.exports  = { 
 	async index (req, res) {
 		try{
 			const operations = await Operation.findAll({
-				include:[{
-					model: Tag,
-				}]
+				include:[ 
+					{model: Operation_Type},
+					// {model: Tag},
+				]
 			})
 			
 			res.send(operations)
@@ -39,37 +40,30 @@ module.exports  = {
 		try{
 			const {tags, type} = req.body
 
-			const operation = await Operation.create({
-					...req.body,
-				},
-			)
 
-			await Promise.all(tags.map(async tag => {
-				await operation.addTag(await Tag.findOne({
+// fix many:many
+			const allTags = await Promise.all(tags.map(async tag => {
+				return (await Tag.findOrCreate({
 					where:{ name: tag},
 					default:{ name: tag}
-				}))
+				}))[0].id
 			}))
 
-
-
-			// ??how to create 1:m 
-			await operation.addType(await Tag.findOne({
+			const operationType = (await Operation_Type.findOrCreate({
 					where:{ name: type},
 					default:{ name: type}
-				})
-			)
+			}))[0].id
 
-			const result = await Operation.findOne({
-				where: {
-					id: operation.id
-				},
-				include:[{
-					model: Tag,
-				}],
+
+			const operation = await Operation.create({
+					...req.body,
+					operationType: operationType,
+					tags: allTags
 			})
 
-			res.send(result)
+
+
+			res.send(operation)
 
 		} catch(error) {
 			res.status(400).send({
