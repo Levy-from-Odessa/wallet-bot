@@ -14,14 +14,14 @@ module.exports = (sequelize, DataTypes) => {
 		Operation.belongsToMany(models.Tag, {
 			through: models.Operation_Tag,
 			as: 'tags',
+			// foreignKey: 'tag',
 		});
 		Operation.belongsTo(models.Wallet, {
 			through: models.Operation,
 			unique: false,
 		});
 		Operation.belongsTo(models.Operation_Type, {
-			 foreignKey: 'operationType',
-			//  as:'operationType'
+			 foreignKey: 'operationTypeId',
 		});
 		Operation.hasOne(models.Currency, {
 			 through: models.Operation 

@@ -5,8 +5,8 @@ module.exports  = {
 		try{
 			const operations = await Operation.findAll({
 				include:[ 
-					{model: Operation_Type},
-					// {model: Tag},
+					{model: Operation_Type,},
+					// {model: Tag, required: true},
 				]
 			})
 			
@@ -41,13 +41,6 @@ module.exports  = {
 			const {tags, type} = req.body
 
 
-// fix many:many
-			const allTags = await Promise.all(tags.map(async tag => {
-				return (await Tag.findOrCreate({
-					where:{ name: tag},
-					default:{ name: tag}
-				}))[0].id
-			}))
 
 			const operationType = (await Operation_Type.findOrCreate({
 					where:{ name: type},
@@ -57,13 +50,28 @@ module.exports  = {
 
 			const operation = await Operation.create({
 					...req.body,
-					operationType: operationType,
-					tags: allTags
+					operationTypeId: operationType,
+			})
+			// MANY:MANY
+
+			await Promise.all(tags.map(async tag => {
+				const itemTag = (await Tag.findOrCreate({
+					where:{ name: tag},
+					default:{ name: tag}
+				}))[0]
+				await operation.addTag(itemTag)	
+			}))
+
+
+			const result = await Operation.findOne({
+				where: {id: operation.id},
+				include:[ 
+					{model: Operation_Type},
+					{model: Tag},
+				]
 			})
 
-
-
-			res.send(operation)
+			res.send(result)
 
 		} catch(error) {
 			res.status(400).send({

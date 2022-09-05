@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	Operation_Type.associate = function(models) {
 		Operation_Type.hasMany(models.Operation, {
-			foreignKey: 'operationType',
+			foreignKey: 'operationTypeId',
 		});
 	}
 
