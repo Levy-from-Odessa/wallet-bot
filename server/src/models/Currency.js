@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
 	})
 
 	Currency.associate = function(models) {
-		Currency.belongsTo(models.Operation, {
-			 through: models.Currency
+		Currency.hasMany(models.Operation, {
+			foreignKey: 'currencyId',
 		});
 	}
 

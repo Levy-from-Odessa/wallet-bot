@@ -18,7 +18,7 @@ require('./routes/tags')(app)
 require('./routes/operations')(app)
 
 
-sequelize.sync({force: true})
+sequelize.sync({force: false})
 	.then(() => {
 		app.listen(config.port)
 		console.log(config.port)

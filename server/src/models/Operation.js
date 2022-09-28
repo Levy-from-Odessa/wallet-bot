@@ -4,28 +4,25 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
-		currency: {
-			type: DataTypes.STRING,
-			allowNull: false
-		},
 	})
 
 	Operation.associate = function(models) {
 		Operation.belongsToMany(models.Tag, {
 			through: models.Operation_Tag,
 			as: 'tags',
-			// foreignKey: 'tag',
-		});
-		Operation.belongsTo(models.Wallet, {
-			through: models.Operation,
-			unique: false,
 		});
 		Operation.belongsTo(models.Operation_Type, {
-			 foreignKey: 'operationTypeId',
+			foreignKey: 'operationTypeId',
+			as: 'type',
 		});
-		Operation.hasOne(models.Currency, {
-			 through: models.Operation 
+		Operation.belongsTo(models.Currency, {
+			foreignKey: 'currencyId',
+			as: 'currency',
 		});
+		// Operation.belongsTo(models.Wallet, {
+		// 	through: models.Operation,
+		// 	unique: false,
+		// })
 	}
 	
 

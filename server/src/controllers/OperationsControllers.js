@@ -1,12 +1,28 @@
 const {sequelize} = require('../models')
-const {Operation , Tag, Operation_Type } = require('../models')
+const {Operation , Tag, Operation_Type, Currency } = require('../models')
 module.exports  = { 
 	async index (req, res) {
 		try{
 			const operations = await Operation.findAll({
 				include:[ 
-					{model: Operation_Type,},
-					// {model: Tag, required: true},
+					{
+						model: Operation_Type, 
+						as: 'type', 
+						attributes: ['name', 'id']
+					},
+					{
+						model: Currency, 
+						as: 'currency', 
+						attributes: ['name', 'id']
+					},
+					{
+						model: Tag, 
+						as: 'tags', 
+						attributes: ['name', 'color', 'id'], 
+						through: {
+							attributes: []
+						}
+					},
 				]
 			})
 			
@@ -38,21 +54,24 @@ module.exports  = {
 
 	async post (req, res) {
 		try{
-			const {tags, type} = req.body
-
-
+			const {tags, type, currency } = req.body
 
 			const operationType = (await Operation_Type.findOrCreate({
 					where:{ name: type},
 					default:{ name: type}
 			}))[0].id
+			console.log(operationType);
 
+			const currencyId = (await Currency.findOrCreate({
+					where:{ name: currency},
+					default:{ name: currency}
+			}))[0].id
 
 			const operation = await Operation.create({
 					...req.body,
 					operationTypeId: operationType,
+					currencyId: currencyId
 			})
-			// MANY:MANY
 
 			await Promise.all(tags.map(async tag => {
 				const itemTag = (await Tag.findOrCreate({
@@ -62,12 +81,27 @@ module.exports  = {
 				await operation.addTag(itemTag)	
 			}))
 
-
 			const result = await Operation.findOne({
 				where: {id: operation.id},
 				include:[ 
-					{model: Operation_Type},
-					{model: Tag},
+					{
+						model: Operation_Type, 
+						as: 'type', 
+						attributes: ['name', 'id']
+					},
+					{
+						model: Currency, 
+						as: 'currency', 
+						attributes: ['name', 'id']
+					},
+					{
+						model: Tag, 
+						as: 'tags', 
+						attributes: ['name', 'color', 'id'], 
+						through: {
+							attributes: []
+						}
+					},
 				]
 			})
 
@@ -76,7 +110,7 @@ module.exports  = {
 		} catch(error) {
 			res.status(400).send({
 				description: 'while trying to add operation',
-                error: error
+				error: error
 			})
 		}
 		
