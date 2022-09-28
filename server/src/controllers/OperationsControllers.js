@@ -1,12 +1,40 @@
+const { Op } = require('sequelize')
 const {sequelize} = require('../models')
 const {Operation , Tag, Operation_Type, Currency } = require('../models')
 module.exports  = { 
 	async index (req, res) {
 		try{
+			const {dateFrom, dateTo, type, tags} = req.query
+
+			const whereOperation = {
+				...dateFrom && { createdAt :{
+					[Op.gte]: dateFrom
+				}},
+				...dateTo && {createdAt :{
+					[Op.lte]: dateTo
+				}},
+			}
+			
+			const whereType = {
+				...type && {
+					name: type
+				}
+			}
+
+			const whereTags = {
+				...tags && {
+					name: {
+						[Op.in]: tags
+					}
+				}
+			}
+
 			const operations = await Operation.findAll({
+				where: whereOperation,
 				include:[ 
 					{
 						model: Operation_Type, 
+						where: whereType,
 						as: 'type', 
 						attributes: ['name', 'id']
 					},
@@ -17,6 +45,7 @@ module.exports  = {
 					},
 					{
 						model: Tag, 
+						where: whereTags,
 						as: 'tags', 
 						attributes: ['name', 'color', 'id'], 
 						through: {
