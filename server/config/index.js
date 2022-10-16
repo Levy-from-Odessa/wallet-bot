@@ -1,3 +1,4 @@
+require('dotenv').config();
 module.exports = { 
 	port: process.env.PORT || 8080,
 	db: { 
@@ -8,4 +9,7 @@ module.exports = {
 			storage: './wallet.sqlite'
 		}
 	},
+	bot:{
+		token: process.env.BOT_TOKEN || ''
+	}
 }
