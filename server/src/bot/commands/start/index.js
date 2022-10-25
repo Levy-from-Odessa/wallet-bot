@@ -1,18 +1,19 @@
-// const operationsServices = require('../../services/operationsServices')
-// const compileTpl = require('../../templates/compileTpl')
+require('dotenv').config();
 
 const keyboard = ([
     [{
       text: ('Report'),
-      web_app: {url: 'https://dfa1-178-138-97-25.eu.ngrok.io/'}
     }],
     [{
       text: ('Expense'),
+      web_app: {url: process.env.FRONEND_URL+'create?type=expense'}
     },{
       text: ('Invest'),
+      web_app: {url: process.env.FRONEND_URL+'create?type=invest'}
     }],
     [{
       text: ('Income'),
+      web_app: {url: process.env.FRONEND_URL+'create?type=income'}
     },{
       text: ('Total'),
     }],
@@ -24,16 +25,13 @@ const keyboard = ([
 
 
 module.exports = async (msg, ctx) => {
-  console.log(msg);
   const {chat, text, from} = msg
   
   ctx.sendMessage(
     chat.id,
     'welcome, ' + from.first_name,
-    {
-      reply_markup: {keyboard}
-    } 
-    )
+    {reply_markup: {keyboard}} 
+  )
 }
 
     // const allItems = (await operationsServices.getItems()).data

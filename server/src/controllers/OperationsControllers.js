@@ -89,12 +89,13 @@ module.exports  = {
 					where:{ name: type},
 					default:{ name: type}
 			}))[0].id
-			console.log(operationType);
+			console.log(operationType, 'operationType');
 
 			const currencyId = (await Currency.findOrCreate({
 					where:{ name: currency},
 					default:{ name: currency}
 			}))[0].id
+			console.log(currencyId, 'currencyId');
 
 			const operation = await Operation.create({
 					...req.body,
@@ -110,6 +111,7 @@ module.exports  = {
 				await operation.addTag(itemTag)	
 			}))
 
+			console.log(operation, 'operation');
 			const result = await Operation.findOne({
 				where: {id: operation.id},
 				include:[ 
@@ -134,6 +136,7 @@ module.exports  = {
 				]
 			})
 
+			console.log(result);
 			res.send(result)
 
 		} catch(error) {

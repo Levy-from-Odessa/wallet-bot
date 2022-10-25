@@ -12,20 +12,16 @@ bot.on('message', (msg) =>{
   const {chat, text, from} = msg
   if (text === '/start') {
     startCommand(msg, bot)
-    
   }
 })
 
 bot.on(('web_app_data'), async msg => {
   const {chat, text, from, web_app_data} = msg
+  console.log(web_app_data);
 
-  const res = await OperationsControllers.post({
-    ...JSON.parse(web_app_data.data),
-    type: web_app_data.button_text
-  })
 
   bot.sendMessage(
     chat.id,
-    res
+    'good'
   )
 })
