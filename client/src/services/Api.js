@@ -1,5 +1,5 @@
 import  axios from 'axios'
-import { env } from '$env/dynamic/private';
+import { env } from '$env/dynamic/private'; //here
 const Api = axios.create({
   baseURL: env.WALLET_API,
   timeout: 30000
