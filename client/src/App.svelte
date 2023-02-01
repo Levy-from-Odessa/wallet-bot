@@ -1,12 +1,22 @@
 <script>
-  // @ts-ignore
+  // @ts-nocheck
+
+  import { setContext } from "svelte";
+
   import Router, { location, link } from "svelte-spa-router";
+  import Home from "./routes/home.svelte";
   import Create from "./routes/create.svelte";
+  import Income from "./routes/income.svelte";
+
+  // check TELEGRAM in window
+  setContext("telegramBot", window.Telegram.WebApp);
 </script>
 
-123
 <Router
   routes={{
+    "/": Home,
     "/create": Create,
+    "/income": Income,
   }}
 />
+/#{$location}

@@ -1,17 +1,36 @@
 <script>
+  import { getContext, onMount } from "svelte";
+  import operationServices from "../services/operationServices";
+
   import Form from "../lib/Form.svelte";
+
+  const telegramBot = getContext("telegramBot");
+
+  onMount(() => {
+    telegramBot.MainButton.show();
+    telegramBot.MainButton.setParams({
+      text: "Save income",
+    });
+    telegramBot.onEvent("mainButtonClicked", onSendData);
+    telegramBot.expand();
+  });
 
   let value = {
     tags: "",
     currency: "",
     price: 0,
   };
+
+  async function onSendData() {
+    const res = await operationServices.post(value);
+    telegramBot.sendData(JSON.stringify(value));
+  }
 </script>
 
-<!-- markup (zero or more items) goes here -->
-dsa
-<h1>iois</h1>
-<Form on:input={(e) => console.log(e)} {value} />
+{JSON.stringify(value)}
+
+<Form on:input-value={(e) => (value = e.detail)} {value} />
+<button on:click={onSendData}>test</button>
 
 <!-- mounted () {
     console.log(this.$tg.WebAppInitData);
@@ -41,6 +60,3 @@ dsa
 
 Vue.prototype.$tg =  window.Telegram.WebApp
   , -->
-<style>
-  /* your styles go here */
-</style>

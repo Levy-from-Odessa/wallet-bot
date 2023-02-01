@@ -5,7 +5,7 @@
   export let value;
 
   const updateValue = (key, event) => {
-    dispatch("input", {
+    dispatch("input-value", {
       ...value,
       [key]: event.target.value,
     });
