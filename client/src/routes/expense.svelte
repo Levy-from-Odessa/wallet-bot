@@ -1,6 +1,6 @@
 <script>
   import { getContext, onMount } from "svelte";
-  import operationServices from "../services/operationServices";
+  import expenseServices from "../services/expenseServices";
 
   import Form from "../lib/Form.svelte";
 
@@ -22,10 +22,10 @@
   };
 
   async function onSendData() {
-    await operationServices.post({
+    await expenseServices.post({
       ...value,
       tags: value.tags.split(","),
-      type: "income",
+      type: "expense",
     });
     telegramBot.sendData(JSON.stringify(value));
   }
@@ -34,4 +34,4 @@
 <!-- {JSON.stringify(value)} -->
 
 <Form on:input-value={(e) => (value = e.detail)} {value} />
-<button on:click={onSendData}>Income</button>
+<button on:click={onSendData}>Expense</button>

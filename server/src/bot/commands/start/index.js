@@ -6,14 +6,14 @@ const keyboard = ([
     }],
     [{
       text: ('Expense'),
-      web_app: {url: process.env.FRONEND_URL+'create?type=expense'}
+      web_app: {url: process.env.FRONEND_URL+'expense'}
     },{
       text: ('Invest'),
-      web_app: {url: process.env.FRONEND_URL+'create?type=invest'}
+      web_app: {url: process.env.FRONEND_URL+'invest'}
     }],
     [{
       text: ('Income'),
-      web_app: {url: process.env.FRONEND_URL+'create?type=income'}
+      web_app: {url: process.env.FRONEND_URL+'income'}
     },{
       text: ('Total'),
     }],
@@ -26,11 +26,11 @@ const keyboard = ([
 
 module.exports = async (msg, ctx) => {
   const {chat, text, from} = msg
-  
+
   ctx.sendMessage(
     chat.id,
-    'welcome, ' + from.first_name,
-    {reply_markup: {keyboard}} 
+    'processing',
+    {reply_markup: {keyboard}}
   )
 }
 
@@ -40,12 +40,12 @@ module.exports = async (msg, ctx) => {
     // const totalHeaders = ['type', 'amount']
 
     // const tplImage = await compileTpl(
-    //   './src/templates/report/index.tpl', 
+    //   './src/templates/report/index.tpl',
     //   {
-    //     allItems, 
-    //     headers, 
-    //     // total, 
-    //     totalHeaders 
+    //     allItems,
+    //     headers,
+    //     // total,
+    //     totalHeaders
     //   }
     // )
 

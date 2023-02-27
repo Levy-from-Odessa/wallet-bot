@@ -7,8 +7,8 @@
   import Home from "./routes/home.svelte";
   import Create from "./routes/create.svelte";
   import Income from "./routes/income.svelte";
+  import Expense from "./routes/expense.svelte";
 
-  // check TELEGRAM in window
   setContext("telegramBot", window.Telegram.WebApp);
 </script>
 
@@ -17,6 +17,7 @@
     "/": Home,
     "/create": Create,
     "/income": Income,
+    "/expense": Expense,
   }}
 />
 /#{$location}

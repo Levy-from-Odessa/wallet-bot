@@ -1,7 +1,7 @@
 import  axios from 'axios'
-import { env } from '$env/dynamic/private'; //here
+// import { SECRET_API_KEY } from '$env/static/private'; //here
 const Api = axios.create({
-  baseURL: env.WALLET_API,
+  baseURL: 'http://localhost:8080',
   timeout: 30000
 
 })
@@ -25,17 +25,9 @@ Api.interceptors.response.use(
     return data
   },
   (error) => {
-    // if (
-    //   error.response &&
-    //   error.response.status &&
-    //   error.response.status === 401 &&
-    //   error.response.data.message !== 'Bad credentials'
-    // ) {
-    //   window.location.href = '/login'
-    // }
 
     const message = error
-    global.console.log(error)
+    console.log(error)
     return Promise.reject(message)
   }
 )

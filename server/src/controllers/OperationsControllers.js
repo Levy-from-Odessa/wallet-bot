@@ -1,7 +1,7 @@
 const { Op } = require('sequelize')
 const {sequelize} = require('../models')
 const {Operation , Tag, Operation_Type, Currency } = require('../models')
-module.exports  = { 
+module.exports  = {
 	async index (req, res) {
 		try{
 			const {dateFrom, dateTo, type, tags} = req.query
@@ -14,7 +14,7 @@ module.exports  = {
 					[Op.lte]: dateTo
 				}},
 			}
-			
+
 			const whereType = {
 				...type && {
 					name: type
@@ -31,30 +31,30 @@ module.exports  = {
 
 			const operations = await Operation.findAll({
 				where: whereOperation,
-				include:[ 
+				include:[
 					{
-						model: Operation_Type, 
+						model: Operation_Type,
 						where: whereType,
-						as: 'type', 
+						as: 'type',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Currency, 
-						as: 'currency', 
+						model: Currency,
+						as: 'currency',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Tag, 
+						model: Tag,
 						where: whereTags,
-						as: 'tags', 
-						attributes: ['name', 'color', 'id'], 
+						as: 'tags',
+						attributes: ['name', 'color', 'id'],
 						through: {
 							attributes: []
 						}
 					},
 				]
 			})
-			
+
 			res.send(operations)
 		} catch(error) {
 			res.status(400).send({
@@ -84,6 +84,7 @@ module.exports  = {
 	async post (req, res) {
 		try{
 			const {tags, type, currency } = req.body
+      console.log(req.body);
 
 			const operationType = (await Operation_Type.findOrCreate({
 					where:{ name: type},
@@ -108,27 +109,27 @@ module.exports  = {
 					where:{ name: tag},
 					default:{ name: tag}
 				}))[0]
-				await operation.addTag(itemTag)	
+				await operation.addTag(itemTag)
 			}))
 
 			console.log(operation, 'operation');
 			const result = await Operation.findOne({
 				where: {id: operation.id},
-				include:[ 
+				include:[
 					{
-						model: Operation_Type, 
-						as: 'type', 
+						model: Operation_Type,
+						as: 'type',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Currency, 
-						as: 'currency', 
+						model: Currency,
+						as: 'currency',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Tag, 
-						as: 'tags', 
-						attributes: ['name', 'color', 'id'], 
+						model: Tag,
+						as: 'tags',
+						attributes: ['name', 'color', 'id'],
 						through: {
 							attributes: []
 						}
@@ -145,7 +146,7 @@ module.exports  = {
 				error: error
 			})
 		}
-		
+
 	},
 	async delete (req, res) {
 		try{
@@ -161,10 +162,10 @@ module.exports  = {
 				error: 'Cant delete'
 			})
 		}
-		
+
 	},
 	async edit (req, res) {
-	
+
 		try{
 			const {id} = req.body
 			const operation = await Operation.findOne({
@@ -183,7 +184,7 @@ module.exports  = {
 				error: 'cant udate'
 			})
 		}
-		
+
 	},
 
 	async getAmount(req, res){
@@ -198,7 +199,7 @@ module.exports  = {
 				group: [groupBy],
 			});
 			res.send({totalAmount})
-			
+
 		} catch (error) {
 			res.status(400).send({
 				error: 'cant update' +error

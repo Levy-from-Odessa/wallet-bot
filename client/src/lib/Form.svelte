@@ -13,24 +13,36 @@
 </script>
 
 <form class="form">
-  <input
-    class="input"
-    value={value.tags}
-    on:input={(e) => updateValue("tags", e)}
-    type="text"
-  />
-  <input
-    class="input"
-    value={value.currency}
-    on:input={(e) => updateValue("currency", e)}
-    type="text"
-  />
-  <input
-    class="input"
-    value={value.price}
-    on:input={(e) => updateValue("price", e)}
-    type="number"
-  />
+  <div class="input">
+    <label for="tags"> Tags </label>
+    <input
+      name="tags"
+      class="input"
+      value={value.tags}
+      on:input={(e) => updateValue("tags", e)}
+      type="text"
+    />
+  </div>
+  <div class="input">
+    <label for="currency"> Currency </label>
+    <input
+      name="currency"
+      class="input"
+      value={value.currency}
+      on:input={(e) => updateValue("currency", e)}
+      type="text"
+    />
+  </div>
+  <div class="input">
+    <label for="price"> Price </label>
+    <input
+      name="price"
+      class="input"
+      value={value.price}
+      on:input={(e) => updateValue("price", e)}
+      type="number"
+    />
+  </div>
 </form>
 
 <style>
@@ -41,9 +53,9 @@
   }
 
   .input {
+    display: block;
     width: 100%;
-    height: 60px;
-    font-size: 35px;
+    font-size: 25px;
     margin-top: 15px;
   }
 </style>
