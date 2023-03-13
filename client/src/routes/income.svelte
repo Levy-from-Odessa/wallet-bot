@@ -31,6 +31,7 @@
   }
 </script>
 
+<!-- sometimes only one tag added -->
 <!-- {JSON.stringify(value)} -->
 
 <Form on:input-value={(e) => (value = e.detail)} {value} />
