@@ -83,23 +83,23 @@ module.exports  = {
 
 	async post (req, res) {
 		try{
-			const {tags, type, currency } = req.body
-      console.log(req.body);
+			const {tags, type, currency, date } = req.body
 
 			const operationType = (await Operation_Type.findOrCreate({
-					where:{ name: type},
-					default:{ name: type}
+					where:{ name: type },
+					default:{ name: type, }
 			}))[0].id
-			console.log(operationType, 'operationType');
 
 			const currencyId = (await Currency.findOrCreate({
 					where:{ name: currency},
 					default:{ name: currency}
 			}))[0].id
-			console.log(currencyId, 'currencyId');
+
 
 			const operation = await Operation.create({
 					...req.body,
+          createdAt: date,
+          updatedAt: date,
 					operationTypeId: operationType,
 					currencyId: currencyId
 			})
@@ -112,7 +112,6 @@ module.exports  = {
 				await operation.addTag(itemTag)
 			}))
 
-			console.log(operation, 'operation');
 			const result = await Operation.findOne({
 				where: {id: operation.id},
 				include:[
@@ -137,7 +136,6 @@ module.exports  = {
 				]
 			})
 
-			console.log(result);
 			res.send(result)
 
 		} catch(error) {
