@@ -80,7 +80,52 @@ module.exports  = {
 			})
 		}
 	},
+  async findOperationByTagId(req, res) {
+    try {
+      const { tagId } = req.params;
 
+      const operations = await Operation.findAll({
+        include: [
+          {
+            model: Tag,
+            as: 'tags',
+            attributes: [],
+            where: { id: tagId },
+          },
+          {
+            model: Operation_Type,
+            as: 'type',
+            attributes: ['name', 'id'],
+          },
+          {
+            model: Currency,
+            as: 'currency',
+            attributes: ['name', 'id'],
+          },
+        ],
+      });
+
+      if (!operations) {
+        return res.status(404).send({
+          description: 'Operation not found',
+        });
+      }
+
+      const total = operations.reduce((acc, operation) => {
+        return acc =  acc + (operation.price || 0);
+      }, 0)
+      console.log(total);
+
+      res.send({total});
+    } catch (error) {
+      res.status(400).send({
+        description: 'Error occurred while trying to find the operation by tag ID',
+        error: error,
+      });
+    }
+  },
+
+  // todo: delete operation id: 96 - 'minus.' tag name
 	async post (req, res) {
 		try{
 			const {tags, type, currency, date } = req.body
@@ -104,13 +149,13 @@ module.exports  = {
 					currencyId: currencyId
 			})
 
-			await Promise.all(tags.map(async tag => {
-				const itemTag = (await Tag.findOrCreate({
-					where:{ name: tag},
-					default:{ name: tag}
-				}))[0]
-				await operation.addTag(itemTag)
-			}))
+      for (const tag of tags) {
+        const [itemTag] = await Tag.findOrCreate({
+          where: { name: tag },
+          defaults: { name: tag },
+        });
+        await operation.addTag(itemTag);
+      }
 
 			const result = await Operation.findOne({
 				where: {id: operation.id},
@@ -136,7 +181,8 @@ module.exports  = {
 				]
 			})
 
-			res.send(result)
+
+      res.send(result);
 
 		} catch(error) {
 			res.status(400).send({

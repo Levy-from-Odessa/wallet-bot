@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 module.exports = {
-	port: process.env.PORT || 8080,
+	port: process.env.PORT || 8081,
 	db: {
 		database: process.env.DB_NAME || 'wallet',
 		options: {
