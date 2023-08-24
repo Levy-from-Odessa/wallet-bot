@@ -3,6 +3,7 @@
 
   const dispatch = createEventDispatcher();
   export let value;
+  export let tags;
 
   const updateValue = (key, event) => {
     dispatch("input-value", {
@@ -22,6 +23,11 @@
       on:input={(e) => updateValue("tags", e)}
       type="text"
     />
+  </div>
+  <div class="">
+    {#each tags as tag}
+      <div class="chip">{{ tag.name }}</div>
+    {/each}
   </div>
   <div class="input">
     <label for="currency"> Currency </label>

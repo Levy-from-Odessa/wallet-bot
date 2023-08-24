@@ -6,7 +6,7 @@ const getRandomColor = require('../../utils/getRandomColor')
 module.exports  = {
 	async index (req, res) {
 		try{
-			const {dateFrom, dateTo, type, tags} = req.query
+			const {dateFrom, dateTo, type, tags, priceFrom, priceTo} = req.query
 
 			const whereOperation = {
 				...dateFrom && { createdAt :{
@@ -14,6 +14,12 @@ module.exports  = {
 				}},
 				...dateTo && {createdAt :{
 					[Op.lte]: dateTo
+				}},
+				...priceFrom && { price :{
+					[Op.gte]: priceFrom
+				}},
+				...priceTo && { price :{
+					[Op.lte]: priceTo
 				}},
 			}
 
@@ -32,7 +38,6 @@ module.exports  = {
 			}
 
 			const operations = await Operation.findAll({
-				where: whereOperation,
 				include:[
 					{
 						model: Operation_Type,
@@ -54,7 +59,9 @@ module.exports  = {
 							attributes: []
 						}
 					},
-				]
+				],
+				where: whereOperation,
+        order: [['createdAt', 'DESC']],
 			})
 
 			res.send(operations)
@@ -127,7 +134,6 @@ module.exports  = {
     }
   },
 
-  // todo: delete operation id: 96 - 'minus.' tag name
 	async post (req, res) {
 		try{
 			const {tags, type, currency, date } = req.body
