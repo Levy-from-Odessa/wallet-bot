@@ -1,6 +1,8 @@
 const { Op } = require('sequelize')
 const {sequelize} = require('../models')
 const {Operation , Tag, Operation_Type, Currency } = require('../models')
+const getRandomColor = require('../../utils/getRandomColor')
+
 module.exports  = {
 	async index (req, res) {
 		try{
@@ -150,9 +152,10 @@ module.exports  = {
 			})
 
       for (const tag of tags) {
+        console.log(getRandomColor(), 'color');
         const [itemTag] = await Tag.findOrCreate({
           where: { name: tag },
-          defaults: { name: tag },
+          defaults: { name: tag, color: getRandomColor() },
         });
         await operation.addTag(itemTag);
       }
@@ -234,7 +237,6 @@ module.exports  = {
 	async getAmount(req, res){
 		try {
 			const {groupBy} = req.query
-			console.log(groupBy);
 			const totalAmount = await Operation.findAll({
 				attributes: [
 					groupBy,
