@@ -1,10 +1,13 @@
 const { Op } = require('sequelize')
 const {sequelize} = require('../models')
 const {Operation , Tag, Operation_Type, Currency } = require('../models')
-module.exports  = { 
+const getRandomColor = require('../../utils/getRandomColor')
+const getSumAndAvgByType = require('../../utils/getSumAndAvgByType')
+
+module.exports  = {
 	async index (req, res) {
 		try{
-			const {dateFrom, dateTo, type, tags} = req.query
+			const {dateFrom, dateTo, type, tags, priceFrom, priceTo} = req.query
 
 			const whereOperation = {
 				...dateFrom && { createdAt :{
@@ -13,8 +16,14 @@ module.exports  = {
 				...dateTo && {createdAt :{
 					[Op.lte]: dateTo
 				}},
+				...priceFrom && { price :{
+					[Op.gte]: priceFrom
+				}},
+				...priceTo && { price :{
+					[Op.lte]: priceTo
+				}},
 			}
-			
+
 			const whereType = {
 				...type && {
 					name: type
@@ -28,37 +37,49 @@ module.exports  = {
 					}
 				}
 			}
+      const types = await Operation_Type.findAll()
+      const keyedTypes = types.reduce((acc, type) => {
+        acc[type.id] = type.name
+        return acc
+      }, {})
 
-			const operations = await Operation.findAll({
-				where: whereOperation,
-				include:[ 
+      const operations = await Operation.findAll({
+				include:[
 					{
-						model: Operation_Type, 
+						model: Operation_Type,
 						where: whereType,
-						as: 'type', 
+						as: 'type',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Currency, 
-						as: 'currency', 
+						model: Currency,
+						as: 'currency',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Tag, 
+						model: Tag,
 						where: whereTags,
-						as: 'tags', 
-						attributes: ['name', 'color', 'id'], 
+						as: 'tags',
+						attributes: ['name', 'color', 'id'],
 						through: {
 							attributes: []
 						}
 					},
-				]
+				],
+				where: whereOperation,
+        order: [['createdAt', 'DESC']],
 			})
-			
-			res.send(operations)
+
+
+
+			res.send({
+        operations,
+        ...getSumAndAvgByType(operations, keyedTypes)
+      })
 		} catch(error) {
 			res.status(400).send({
-				error: 'i have no operations'
+				error: 'i have no operations',
+        description: error,
 			})
 		}
 	},
@@ -80,53 +101,100 @@ module.exports  = {
 			})
 		}
 	},
+  async findOperationByTagId(req, res) {
+    try {
+      const { tagId } = req.params;
+
+      const operations = await Operation.findAll({
+        include: [
+          {
+            model: Tag,
+            as: 'tags',
+            attributes: [],
+            where: { id: tagId },
+          },
+          {
+            model: Operation_Type,
+            as: 'type',
+            attributes: ['name', 'id'],
+          },
+          {
+            model: Currency,
+            as: 'currency',
+            attributes: ['name', 'id'],
+          },
+        ],
+      });
+
+      if (!operations) {
+        return res.status(404).send({
+          description: 'Operation not found',
+        });
+      }
+
+      const total = operations.reduce((acc, operation) => {
+        return acc =  acc + (operation.price || 0);
+      }, 0)
+      console.log(total);
+
+      res.send({total});
+    } catch (error) {
+      res.status(400).send({
+        description: 'Error occurred while trying to find the operation by tag ID',
+        error: error,
+      });
+    }
+  },
 
 	async post (req, res) {
 		try{
-			const {tags, type, currency } = req.body
+			const {tags, type, currency, date } = req.body
 
 			const operationType = (await Operation_Type.findOrCreate({
-					where:{ name: type},
-					default:{ name: type}
+					where:{ name: type },
+					default:{ name: type, }
 			}))[0].id
-			console.log(operationType);
 
 			const currencyId = (await Currency.findOrCreate({
 					where:{ name: currency},
 					default:{ name: currency}
 			}))[0].id
 
+
 			const operation = await Operation.create({
 					...req.body,
+          createdAt: date,
+          updatedAt: date,
 					operationTypeId: operationType,
 					currencyId: currencyId
 			})
 
-			await Promise.all(tags.map(async tag => {
-				const itemTag = (await Tag.findOrCreate({
-					where:{ name: tag},
-					default:{ name: tag}
-				}))[0]
-				await operation.addTag(itemTag)	
-			}))
+      for (const tag of tags) {
+        console.log(getRandomColor(), 'color');
+        const [itemTag] = await Tag.findOrCreate({
+          where: { name: tag },
+          defaults: { name: tag, color: getRandomColor() },
+        });
+        await operation.addTag(itemTag);
+      }
 
 			const result = await Operation.findOne({
 				where: {id: operation.id},
-				include:[ 
+				include:[
 					{
-						model: Operation_Type, 
-						as: 'type', 
+						model: Operation_Type,
+						as: 'type',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Currency, 
-						as: 'currency', 
+						model: Currency,
+						as: 'currency',
 						attributes: ['name', 'id']
 					},
 					{
-						model: Tag, 
-						as: 'tags', 
-						attributes: ['name', 'color', 'id'], 
+						model: Tag,
+						as: 'tags',
+						attributes: ['name', 'color', 'id'],
 						through: {
 							attributes: []
 						}
@@ -134,7 +202,8 @@ module.exports  = {
 				]
 			})
 
-			res.send(result)
+
+      res.send(result);
 
 		} catch(error) {
 			res.status(400).send({
@@ -142,7 +211,7 @@ module.exports  = {
 				error: error
 			})
 		}
-		
+
 	},
 	async delete (req, res) {
 		try{
@@ -158,10 +227,10 @@ module.exports  = {
 				error: 'Cant delete'
 			})
 		}
-		
+
 	},
 	async edit (req, res) {
-	
+
 		try{
 			const {id} = req.body
 			const operation = await Operation.findOne({
@@ -180,13 +249,12 @@ module.exports  = {
 				error: 'cant udate'
 			})
 		}
-		
+
 	},
 
 	async getAmount(req, res){
 		try {
 			const {groupBy} = req.query
-			console.log(groupBy);
 			const totalAmount = await Operation.findAll({
 				attributes: [
 					groupBy,
@@ -195,7 +263,7 @@ module.exports  = {
 				group: [groupBy],
 			});
 			res.send({totalAmount})
-			
+
 		} catch (error) {
 			res.status(400).send({
 				error: 'cant update' +error

@@ -2,7 +2,8 @@ module.exports = (sequelize, DataTypes) => {
 	const Operation = sequelize.define('Operation', {
 		price: {
 			type: DataTypes.INTEGER,
-			allowNull: false
+			allowNull: false,
+      required: true
 		},
 	})
 
@@ -24,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
 		// 	unique: false,
 		// })
 	}
-	
+
 
 	return Operation
 }

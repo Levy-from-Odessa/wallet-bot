@@ -7,4 +7,7 @@ module.exports = (app) => {
 	app.get('/operations/amount',
 		OperationsControllers.getAmount
 	)
+	app.get('/operations/tag/:tagId',
+		OperationsControllers.findOperationByTagId
+	)
 }
