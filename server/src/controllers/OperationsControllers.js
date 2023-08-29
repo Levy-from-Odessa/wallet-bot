@@ -2,6 +2,7 @@ const { Op } = require('sequelize')
 const {sequelize} = require('../models')
 const {Operation , Tag, Operation_Type, Currency } = require('../models')
 const getRandomColor = require('../../utils/getRandomColor')
+const getSumAndAvgByType = require('../../utils/getSumAndAvgByType')
 
 module.exports  = {
 	async index (req, res) {
@@ -36,8 +37,13 @@ module.exports  = {
 					}
 				}
 			}
+      const types = await Operation_Type.findAll()
+      const keyedTypes = types.reduce((acc, type) => {
+        acc[type.id] = type.name
+        return acc
+      }, {})
 
-			const operations = await Operation.findAll({
+      const operations = await Operation.findAll({
 				include:[
 					{
 						model: Operation_Type,
@@ -64,10 +70,16 @@ module.exports  = {
         order: [['createdAt', 'DESC']],
 			})
 
-			res.send(operations)
+
+
+			res.send({
+        operations,
+        ...getSumAndAvgByType(operations, keyedTypes)
+      })
 		} catch(error) {
 			res.status(400).send({
-				error: 'i have no operations'
+				error: 'i have no operations',
+        description: error,
 			})
 		}
 	},
