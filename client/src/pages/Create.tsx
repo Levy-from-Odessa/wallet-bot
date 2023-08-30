@@ -3,19 +3,20 @@ import UIForm from "../components/UIForm";
 import { ITag } from "../constants/tag";
 import tagServices from "../services/tagServices";
 import { IOperation, IOperationRequest } from "../constants/operation";
+import { useSearchParams } from "react-router-dom";
 
 function Create() {
-  const [tags, setTags] = useState<ITag[]>();
-  const [value, setValue] = useState<IOperationRequest>(
-{
+  const [queryParameters] = useSearchParams()
+  const defaultOperation: IOperationRequest = {
     id: 0,
     name: '',
-    tags: ['test', 'test2'],
-    type: 'income',
+    tags: [],
+    type: queryParameters.get("type") || '',
     price: 0,
     currency: 'USD'
   }
-  );
+  const [tags, setTags] = useState<ITag[]>();
+  const [value, setValue] = useState<IOperationRequest>(defaultOperation);
 
   const fetchTags = useCallback(async () => { 
     try {
@@ -32,8 +33,11 @@ function Create() {
   }, [fetchTags])
 
   const onUpdate = (value: IOperationRequest) => {
-    console.log(value);
-    
+    console.log(value, queryParameters.get("type"));
+    setValue(value)
+  }
+  const onSend = () => {
+    console.log(value, queryParameters.get("type"));
     setValue(value)
   }
 
@@ -44,6 +48,7 @@ function Create() {
         tags={tags} 
         value={value} 
         onUpdate={onUpdate}
+        onSend={onSend}
       />
     </div>
   );

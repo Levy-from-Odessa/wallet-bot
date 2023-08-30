@@ -2,11 +2,13 @@ import { Button, Card, CardActions, CardContent, Chip, TextField, Typography, ch
 import { styled } from "styled-components";
 import { ITag } from "../../constants/tag";
 import { IBaseModel } from "../../constants/general";
+import { buttonClasses } from "@mui/base";
 
 interface IProps<T> {
   value: T,
   tags?: ITag[],
   onUpdate: (value: T) => void
+  onSend: () => void
 }
 
 const ChipsContainer = styled.div(() => ({
@@ -17,24 +19,32 @@ const ChipsContainer = styled.div(() => ({
 }));
 const StyledChip = styled(Chip)(() => ({
   [`&.${chipClasses.root}`]: {
-    padding: '15px',
+    padding: '10px',
     margin: '2px 5px',
-    fontSize: '1.2rem',
+    fontSize: '24px',
     textTransform: 'capitalize',
     borderRadius: '5px',
   }
 }));
 
+const StyledButton = styled(Button)(() => ({
+  [`&.${buttonClasses.root}`]: {
+    padding: '10px',
+    fontSize: '30px',
+    textTransform: 'capitalize',
+  }
+}));
+
 function UIForm<T extends IBaseModel>(props: IProps<T>) {
-  const {tags, value, onUpdate} = props;
+  const {tags, value, onUpdate, onSend} = props;
 
 
   const prices = [5, 10, 15, 20];
 
   return (
     <Card>
-      <Typography gutterBottom variant="h5" component="div">
-        Create
+      <Typography variant="h5" component="div" textTransform={'uppercase'}>
+        {value.type?.toString()}
       </Typography>
       <CardContent >
         <TextField 
@@ -86,9 +96,9 @@ function UIForm<T extends IBaseModel>(props: IProps<T>) {
         </ChipsContainer>
       </CardContent>
       <CardActions>
-        <Button  color="primary" fullWidth>
-          create
-        </Button>
+        <StyledButton onClick={onSend} color="primary" fullWidth >
+          Create
+        </StyledButton>
       </CardActions>
     </Card>
   );
