@@ -44,6 +44,7 @@ module.exports  = {
       }, {})
 
       const operations = await Operation.findAll({
+        attributes: ['id', 'price', 'createdAt'],
 				include:[
 					{
 						model: Operation_Type,

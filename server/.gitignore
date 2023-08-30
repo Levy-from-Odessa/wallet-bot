@@ -1,5 +1,0 @@
-cert.pem
-key.pem
-csr.pem
-.env
-wallet.sqlite
