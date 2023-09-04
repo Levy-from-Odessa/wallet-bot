@@ -1,4 +1,4 @@
-import { IOperationStatistic, IOperationsResponse } from '../constants/operation';
+import { IOperationsResponse } from '../constants/operation';
 import { AxiosResponse } from 'axios'
 import { IOperation } from '../constants/operation'
 import Api from './Api'

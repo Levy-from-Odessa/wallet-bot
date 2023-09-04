@@ -1,0 +1,33 @@
+.receipt{
+  width: 100%;
+  padding: 10px;
+  border-radius: 3px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.receipt:after{
+  position: absolute;
+  background:
+        linear-gradient(-45deg, transparent 16px, var(--tg-theme-secondary-bg-color) 0),
+        linear-gradient(45deg, transparent 16px, var(--tg-theme-secondary-bg-color)  0);
+      background-repeat: repeat-x;
+  background-position: left bottom;
+      background-size: 22px 32px;
+      content: "";
+      display: block;
+
+  width: 100%;
+  height: 32px;
+
+  bottom: -20px;
+  left:0px;
+}
+
+.receipt-tags{
+  max-width: 62%;
+  word-wrap: break-word;
+
+}

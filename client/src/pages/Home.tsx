@@ -17,11 +17,11 @@ function Home() {
         // Handle error here
     }
     setLoading(false);
-  }, [setLoading, setOperations])
+  }, [])
 
   useEffect(() => {
     fetchOperations()
-  }, [fetchOperations])
+  }, [])
 
   const cols = [
     {
@@ -61,7 +61,6 @@ function Home() {
           ? <UITable<IOperation> cols={cols} data={operations}  /> 
           : <div>Loading...</div> 
       }
-      HOME
     </div>
   );
 }

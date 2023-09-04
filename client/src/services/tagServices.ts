@@ -1,5 +1,4 @@
 import { ITag } from '../constants/tag'
-import { AxiosResponse } from 'axios'
 import Api from './Api'
 
 const url = 'tags'
