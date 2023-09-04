@@ -3,23 +3,26 @@ require('dotenv').config();
 const keyboard = ([
     [{
       text: ('Report'),
+      web_app: {url: process.env.FRONEND_URL}
     }],
     [{
       text: ('Expense'),
-      web_app: {url: process.env.FRONEND_URL+'expense'}
+      web_app: {url: process.env.FRONEND_URL+'/create?expense'}
     },{
-      text: ('Invest'),
-      web_app: {url: process.env.FRONEND_URL+'invest'}
+      text: ('Invest (not supported)'),
+      // web_app: {url: process.env.FRONEND_URL+'/create/invest'}
     }],
     [{
       text: ('Income'),
-      web_app: {url: process.env.FRONEND_URL+'income'}
-    },{
-      text: ('Total'),
-    }],
-    [{
-      text: ('Settings'),
-    }],
+      web_app: {url: process.env.FRONEND_URL+'/create?income'}
+    },
+    // {
+    //   text: ('Total'),
+    // }
+  ],
+    // [{
+    //   text: ('Settings'),
+    // }],
 ])
 
 

@@ -17,10 +17,11 @@ bot.on('message', (msg) =>{
 
 bot.on(('web_app_data'), async msg => {
   const {chat, text, from, web_app_data} = msg
-  console.log(web_app_data);
+  console.log(web_app_data, text);
 
-  bot.sendMessage(
-    chat.id,
-    web_app_data.data
-  )
+  // bot.sendMessage(
+  //   chat.id,
+  //   web_app_data.data
+  // )
+
 })
