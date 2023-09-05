@@ -6,12 +6,12 @@ import { IOperationRequest } from "../constants/operation";
 import { useSearchParams } from "react-router-dom";
 import { telegramAPI } from "../constants/telegram";
 import UIReceipt from "../components/UIReceipt";
+import operationServices from "../services/operationServices";
 
 function Create() {
   const [queryParameters] = useSearchParams()
   const defaultOperation: IOperationRequest = {
-    id: 0,
-    name: '',
+    // id: 0,
     tags: [],
     type: queryParameters.get("type") || 'expense',
     price: 0,
@@ -30,6 +30,14 @@ function Create() {
     }
   }, [])
 
+  const onSend = useCallback(async() => {
+    const operation = await operationServices.post(value)
+    console.log(operation);
+    
+
+    telegramAPI.sendData(JSON.stringify(operation))
+  }, [value])
+
   const showSaveBtn = useCallback(() => {
     telegramAPI.MainButton.show()
     telegramAPI.MainButton.setParams({
@@ -37,7 +45,7 @@ function Create() {
     })
     telegramAPI.onEvent('mainButtonClicked', onSend);
     telegramAPI.expand()
-  }, [])
+  }, [onSend])
 
   useEffect(() => {
     fetchTags()
@@ -51,11 +59,6 @@ function Create() {
 
 
 
-  const onSend = () => {
-    telegramAPI.sendData(JSON.stringify(value))
-  }
-
-
   return (
     <div className="">
       <UIForm<IOperationRequest> 
@@ -64,6 +67,7 @@ function Create() {
         onUpdate={setValue}
       />
       <UIReceipt<IOperationRequest> value={value} />
+      <button onClick={onSend}>send</button>
     </div>
   );
 }

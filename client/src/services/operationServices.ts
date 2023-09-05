@@ -1,4 +1,4 @@
-import { IOperationsResponse } from '../constants/operation';
+import { IOperationRequest, IOperationsResponse } from '../constants/operation';
 import { AxiosResponse } from 'axios'
 import { IOperation } from '../constants/operation'
 import Api from './Api'
@@ -8,7 +8,7 @@ const url = 'operations'
 
 
 const operationServices = {
-  post (data: IOperation): Promise<AxiosResponse<IOperation>> {
+  post (data: IOperationRequest): Promise<IOperation> {
     return Api.post(url, data)
   },
   getItem (id: number): Promise<AxiosResponse<IOperation>> {
