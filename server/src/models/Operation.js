@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: 'currencyId',
 			as: 'currency',
 		});
-		// Operation.belongsTo(models.Wallet, {
-		// 	through: models.Operation,
-		// 	unique: false,
-		// })
+		Operation.belongsTo(models.Wallet, {
+			foreignKey: 'walletId',
+			as: 'wallet',
+		});
 	}
 
 

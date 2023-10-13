@@ -3,11 +3,11 @@ const fs = require('fs');
 module.exports = {
 	port: process.env.PORT || 8081,
 	db: {
-		database: process.env.DB_NAME || 'wallet',
+		database: process.env.DB_NAME ,
 		options: {
-			dialect: process.env.DIALECT || 'sqlite',
-			host: process.env.HOST || 'localhost',
-			storage: './wallet.sqlite'
+			dialect: process.env.DIALECT ,
+			host: process.env.HOST ,
+			storage: './wallet-prod.sqlite',
 		}
 	},
   // ssl: {
