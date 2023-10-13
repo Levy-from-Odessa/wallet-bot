@@ -1,17 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
 	const Wallet = sequelize.define('Wallet', {
-		username: {
+		name: {
 			type: DataTypes.STRING,
-			allowNull: false
+			allowNull: false,
+      unique: true
 		},
-		total: {
-			type: DataTypes.INTEGER,
+		secret: {
+			type: DataTypes.STRING,
 			allowNull: false
 		},
 	})
 
 	Wallet.associate = function(models) {
-		Wallet.hasMany(models.Operation );
+		Wallet.hasMany(models.Operation, {
+			foreignKey: 'walletId',
+		});
 	}
 
 	return Wallet

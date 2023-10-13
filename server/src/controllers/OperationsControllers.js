@@ -1,12 +1,14 @@
 const { Op } = require('sequelize')
 const {sequelize} = require('../models')
-const {Operation , Tag, Operation_Type, Currency } = require('../models')
+const {Operation , Tag, Operation_Type, Currency, Wallet } = require('../models')
 const getRandomColor = require('../../utils/getRandomColor')
 const getSumAndAvgByType = require('../../utils/getSumAndAvgByType')
 
 module.exports  = {
 	async index (req, res) {
 		try{
+
+      const {walletId} = req
 			const {dateFrom, dateTo, type, tags, priceFrom, priceTo} = req.query
 
 			const whereOperation = {
@@ -47,6 +49,12 @@ module.exports  = {
         attributes: ['id', 'price', 'createdAt'],
 				include:[
 					{
+						model: Wallet,
+						as: 'wallet',
+            where: { id: walletId },
+						attributes: ['name', 'id']
+					},
+					{
 						model: Operation_Type,
 						where: whereType,
 						as: 'type',
@@ -86,14 +94,23 @@ module.exports  = {
 	},
 	async getItem(req, res){
 		try {
+      const {walletId} = req
 			const {id} = req.params
 			const operation = await Operation.findOne({
 				where: {
 					id
 				},
-				include:[{
-					model: Tag,
-				}]
+				include:[
+          {
+            model: Tag,
+          },
+					{
+						model: Wallet,
+						as: 'wallet',
+            where: { id: walletId },
+						attributes: ['name', 'id']
+					},
+				]
 			})
 			res.send(operation)
 		} catch (error) {
@@ -104,10 +121,17 @@ module.exports  = {
 	},
   async findOperationByTagId(req, res) {
     try {
+      const {walletId} = req
       const { tagId } = req.params;
 
       const operations = await Operation.findAll({
         include: [
+					{
+						model: Wallet,
+						as: 'wallet',
+						attributes: ['name', 'id'],
+            where: { id: walletId },
+					},
           {
             model: Tag,
             as: 'tags',
@@ -149,6 +173,7 @@ module.exports  = {
 
 	async post (req, res) {
 		try{
+      const {walletId} = req
 			const {tags, type, currency, date } = req.body
 
 			const operationType = (await Operation_Type.findOrCreate({
@@ -161,17 +186,16 @@ module.exports  = {
 					default:{ name: currency}
 			}))[0].id
 
-
 			const operation = await Operation.create({
 					...req.body,
           createdAt: date,
           updatedAt: date,
 					operationTypeId: operationType,
-					currencyId: currencyId
+					currencyId: currencyId,
+          walletId: walletId
 			})
 
       for (const tag of tags) {
-        console.log(getRandomColor(), 'color');
         const [itemTag] = await Tag.findOrCreate({
           where: { name: tag },
           defaults: { name: tag, color: getRandomColor() },
@@ -190,6 +214,11 @@ module.exports  = {
 					{
 						model: Currency,
 						as: 'currency',
+						attributes: ['name', 'id']
+					},
+					{
+						model: Wallet,
+						as: 'wallet',
 						attributes: ['name', 'id']
 					},
 					{
@@ -255,7 +284,9 @@ module.exports  = {
 
 	async getAmount(req, res){
 		try {
+      const {walletId} = req
 			const {groupBy} = req.query
+
 			const totalAmount = await Operation.findAll({
 				attributes: [
 					groupBy,
