@@ -4,7 +4,7 @@ import Api from './Api'
 const url = 'tags'
 
 const tagServices = {
-  getItems  (query: { [key: string]: string} = {}): Promise<ITag[]> {
+  getItems  (query: { [key: string]: string | string[]} = {}): Promise<ITag[]> {
     let adjustedUrl = url
     if (query) {
       adjustedUrl += '?'

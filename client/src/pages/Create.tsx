@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import UIForm from "../components/UIForm";
+import UIForm from "../components/UI/UIForm";
 import { ITag } from "../constants/tag";
 import tagServices from "../services/tagServices";
 import { IOperationRequest } from "../constants/operation";
 import { useSearchParams } from "react-router-dom";
 import { telegramAPI } from "../constants/telegram";
-import UIReceipt from "../components/UIReceipt";
+import UIReceipt from "../components/UI/UIReceipt";
 import operationServices from "../services/operationServices";
 
 function Create() {
@@ -15,7 +15,8 @@ function Create() {
     tags: [],
     type: queryParameters.get("type") || 'expense',
     price: 0,
-    currency: 'USD'
+    currency: 'USD',
+    createdAt: ''
   }
   const [tags, setTags] = useState<ITag[]>();
   const [value, setValue] = useState<IOperationRequest>(defaultOperation);
@@ -31,8 +32,15 @@ function Create() {
   }, [])
 
   const onSend = useCallback(async() => {
-    const operation = await operationServices.post(value)
-    console.log(operation);
+    // console.log(new Date(value.createdAt + ':15:00').toDateString());
+    
+    const operation = await operationServices.post({
+      ...value,
+      tags: value.tags.filter(Boolean),
+      ...(value.createdAt ? {date: new Date('2023-' + value.createdAt + ':15:00').toDateString()} : {})
+    })
+
+    setValue(defaultOperation)
     
 
     telegramAPI.sendData(JSON.stringify(operation))
