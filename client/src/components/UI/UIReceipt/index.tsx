@@ -1,4 +1,4 @@
-import { IBaseModel } from "../../constants/general";
+import { IBaseModel } from "../../../constants/general";
 import './styles.css';
 
 interface IProps<T>{

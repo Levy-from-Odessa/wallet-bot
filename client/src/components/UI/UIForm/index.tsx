@@ -1,8 +1,9 @@
-import { ITag } from "../../constants/tag";
-import { IBaseModel } from "../../constants/general";
+import { ITag } from "../../../constants/tag";
+import { IBaseModel } from "../../../constants/general";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import './styles.css';
+import UIBadges from "./UIBadges";
 
 
 interface IProps<T> {
@@ -29,26 +30,12 @@ function UIForm<T extends IBaseModel>(props: IProps<T>) {
           value={value.tags?.toString()} 
         />
       </Form.Group>
-        <div className="form__chips my-2">
-           {tags ? tags.map(({name}) => {
-               return <Button
-                 key={name}
-                 variant="primary" 
-                 className="m-1"
-                 onClick={() => onUpdate({...value, tags: [ value.tags?.toString(), name]})}
-                >{name}
-               </Button>;
-           }): ''}
 
-           {prices.map((price) => {
-               return <Button 
-                 key={price}
-                 variant="primary" 
-                 className="m-1"
-                 onClick={() => onUpdate({...value, price})}
-               >{price}</Button>;
-           })}
-        </div>
+      <UIBadges 
+        items={tags?.map(item => item.name)} 
+        onBadgeClick={(item) => onUpdate({...value, tags: [ value.tags?.toString(), item]})} 
+      />
+
       <Form.Group className="mb-3">
         <Form.Control 
             placeholder="Currency"
@@ -58,20 +45,21 @@ function UIForm<T extends IBaseModel>(props: IProps<T>) {
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Control 
+            placeholder="Date"
+            value={value.createdAt?.toString()}
+            onInput={(e) => onUpdate({...value, createdAt: (e.target as HTMLTextAreaElement).value})}
+         />
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Control 
           placeholder="price"
           value={value.price?.toString()}
           onInput={(e) => onUpdate({...value, price: (e.target as HTMLTextAreaElement).value})}
          />
-         <div className="form__chips my-2">
-           {prices.map((price) => {
-               return <Button 
-                 key={price}
-                 variant="primary" 
-                 className="m-1"
-                 onClick={() => onUpdate({...value, price})}
-               >{price}</Button>;
-           })}
-         </div>
+        <UIBadges 
+          items={prices} 
+          onBadgeClick={(item) => onUpdate({...value, price: item})} 
+        />
       </Form.Group>
     </Form>
   );

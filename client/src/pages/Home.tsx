@@ -1,64 +1,46 @@
 import { useCallback, useEffect, useState } from "react";
-import UITable from "../components/UITable/Index";
+import UITable from "../components/UI/UITable/Index";
 import operationServices from "../services/operationServices";
 import { IOperation } from "../constants/operation";
+import DefaultTable from "../components/DefaultTable";
+import { Form } from "react-bootstrap";
 
 function Home() {
   const [operations, setOperations] = useState<IOperation[]>();
   const [loading, setLoading] = useState<Boolean>(false);
+  const [filters, setFilters] = useState<{tags: string[]}>({tags: []});
 
-  const fetchOperations = useCallback(async () => { 
+  const fetchOperations = async () => { 
     setLoading(true);
     try {
-        const data = await operationServices.getItems({dateFrom: "2023/08/01" });
+        // const data = await operationServices.getItems({dateFrom: "2023/08/01" });
+        const data = await operationServices.getItems({ dateFrom: "2023/08/9", });
         if (data) setOperations(data.operations);
         
     } catch (error) {
         // Handle error here
     }
     setLoading(false);
-  }, [])
+  }
 
   useEffect(() => {
     fetchOperations()
-  }, [])
+  },[])
 
-  const cols = [
-    {
-      name: "date",
-      value: (operation: IOperation) => {
-        if (!operation.createdAt) return '';
-        const fullDate = new Date(operation.createdAt) 
-          
-        return fullDate.getDate().toString() + '/' + (fullDate.getMonth() + 1).toString()
-      }
-    },
-    {
-      name: "type",
-      value: (operation: IOperation) => {
-        return operation.type.name;
-      }
-    },
-    {
-      name: "tags",
-      value: (operation: IOperation) => {
-        return operation.tags.reduce((acc, tag, index) => {
-          return acc + tag.name + ( index < operation.tags.length - 1 ? ", " : "");
-        }, '');
-      }
-    },
-    {
-      name: "price",
-      value: (operation: IOperation) => {
-        return operation.price + ' ' + operation.currency.name;
-      }
-    },
-  ];
   return (
     <div className="">
+      <div className="">
+        <Form.Group className="">
+          <Form.Control 
+            placeholder="Tags" 
+            onInput={(e) => setFilters({...filters, tags: (e.target as HTMLTextAreaElement).value.split(',')})}
+            value={filters.tags?.toString() || ''} 
+          />
+        </Form.Group>
+      </div>
       {
         operations && !loading 
-          ? <UITable<IOperation> cols={cols} data={operations}  /> 
+          ? <DefaultTable data={operations}  /> 
           : <div>Loading...</div> 
       }
     </div>

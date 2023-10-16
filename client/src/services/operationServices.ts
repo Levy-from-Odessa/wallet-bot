@@ -17,12 +17,20 @@ const operationServices = {
   total (id: number) {
     return Api.get(url + '/total')
   },
-  getItems  (query: { [key: string]: string} = {}): Promise<IOperationsResponse> {
+  getItems  (query: { [key: string]: string | string[]} = {}): Promise<IOperationsResponse> {
+    
     let adjustedUrl = url
     if (query) {
       adjustedUrl += '?'
       Object.keys(query)
       .forEach((key) => {
+        if (Array.isArray(query[key])) {
+          adjustedUrl += (query[key] as string[]).reduce((acc, item, index) => {
+            return acc += key + `[${index}]=${item}&`
+          }, '')
+          console.log(adjustedUrl);
+          
+        }
         if (query[key]) {
           adjustedUrl += key + '=' + query[key] + '&'
         }
