@@ -7,7 +7,7 @@ module.exports = {
 		options: {
 			dialect: process.env.DIALECT ,
 			host: process.env.HOST ,
-			storage: './wallet-prod.sqlite',
+			storage: './wallet.sqlite',
 		}
 	},
   // ssl: {

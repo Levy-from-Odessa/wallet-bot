@@ -88,7 +88,7 @@ module.exports  = {
 		} catch(error) {
 			res.status(400).send({
 				error: 'i have no operations',
-        description: error,
+        description: error.message,
 			})
 		}
 	},
