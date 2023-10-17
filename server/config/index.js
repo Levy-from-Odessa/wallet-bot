@@ -1,5 +1,6 @@
 require('dotenv').config();
-const fs = require('fs');
+const path = require('path')
+
 module.exports = {
 	port: process.env.PORT || 8081,
 	db: {
@@ -7,7 +8,7 @@ module.exports = {
 		options: {
 			dialect: process.env.DIALECT ,
 			host: process.env.HOST ,
-			storage: './wallet.sqlite',
+			storage: path.join(process.env.STRORAGE),
 		}
 	},
   // ssl: {
