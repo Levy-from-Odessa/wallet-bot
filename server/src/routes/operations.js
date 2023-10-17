@@ -5,11 +5,11 @@ const validateToken = require('../middlewares/validateToken')
 
 module.exports = (app) => {
 	generateRoutes({app, namespace: 'operations', controller: OperationsControllers}, validateToken)
-	app.get('/operations/amount',
+	app.get('/api/operations/amount',
     validateToken,
 		OperationsControllers.getAmount
 	)
-	app.get('/operations/tag/:tagId',
+	app.get('/api/operations/tag/:tagId',
     validateToken,
 		OperationsControllers.findOperationByTagId
 	)

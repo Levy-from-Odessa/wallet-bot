@@ -2,6 +2,7 @@
 **/**.sqlite
 **/**.pem
 **/**.sqlite3
+**/**.sql
 server/.env
 server/**.sqlite
 server/**.sqlite3

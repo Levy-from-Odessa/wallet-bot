@@ -1,18 +1,18 @@
 
 module.exports  = ({app, namespace, controller}, middleware) => {
-	app.get(`/${namespace}`,
+	app.get(`/api/${namespace}`,
     middleware,
 		controller.index
 	)
-	app.post(`/${namespace}`,
+	app.post(`/api/${namespace}`,
     middleware,
 		controller.post
 	)
-	app.delete(`/${namespace}`,
+	app.delete(`/api/${namespace}`,
     middleware,
 		controller.delete
 	)
-	app.post(`/${namespace}`,
+	app.post(`/api/${namespace}`,
     middleware,
 		controller.edit
 	)

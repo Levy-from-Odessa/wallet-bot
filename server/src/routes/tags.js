@@ -6,7 +6,7 @@ const validateToken = require('../middlewares/validateToken')
 module.exports = (app) => {
 	generateRoutes({app, namespace: 'tags', controller: TagsControllers}, validateToken),
 
-	app.get('/tags',
+	app.get('/api/tags',
     validateToken,
 		TagsControllers.index
 	)
