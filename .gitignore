@@ -1,7 +1,9 @@
 **/node_modules/
 **/**.sqlite
+**/**.pem
 **/**.sqlite3
 server/.env
 server/**.sqlite
 server/**.sqlite3
+
 
