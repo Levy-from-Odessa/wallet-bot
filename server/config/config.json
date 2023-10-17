@@ -1,10 +1,10 @@
 {
   "development": {
-    "storage": "wallet.sqlite3",
+    "storage": "wallet.sqlite",
     "dialect": "sqlite"
   },
   "production": {
-    "storage": "wallet-test.sqlite",
+    "storage": "wallet-prod.sqlite",
     "dialect": "sqlite"
   }
 }

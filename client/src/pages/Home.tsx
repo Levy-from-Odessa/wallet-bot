@@ -14,7 +14,7 @@ function Home() {
     setLoading(true);
     try {
         // const data = await operationServices.getItems({dateFrom: "2023/08/01" });
-        const data = await operationServices.getItems({ dateFrom: "2023/08/9", });
+        const data = await operationServices.getItems({tags: ['rome']});
         if (data) setOperations(data.operations);
         
     } catch (error) {

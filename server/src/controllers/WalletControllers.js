@@ -41,7 +41,7 @@ module.exports  = {
  async login (req,res) {
     const user = await Wallet.findOne({where: {name: req.body.name}})
     //check to see if the user exists in the list of registered users
-    if (user == null) res.status(404).send ("User does not exist!")
+    if (!user) return res.status(404).send ("User does not exist!")
     //if user does not exist, send a 400 response
     if (await bcrypt.compare(req.body.secret, user.secret)) {
       const accessToken = generateAccessToken({user: req.body.name})

@@ -15,6 +15,7 @@ module.exports = async (req, res, next) => {
     }
     else {
       const user = (await Wallet.findOne({where: {name: name.user}}))
+      if(!user) return res.status(403).send("Token invalid")
       req.walletId = user.id
       next() //proceed to the next action in the calling function
     }
